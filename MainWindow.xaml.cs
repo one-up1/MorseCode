@@ -1,17 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MorseCode
 {
@@ -25,10 +13,34 @@ namespace MorseCode
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(Morse.To("hello morse code world"));
-            Console.WriteLine(Morse.From(".... . .-.. .-.. --- / -- --- .-. ... . / -.-. --- -.. . / .-- --- .-. .-.. -.."));
+            textBox.Focus();
+        }
+
+        private void ToMorse(object sender, RoutedEventArgs e)
+        {
+            Convert(true);
+        }
+
+        private void FromMorse(object sender, RoutedEventArgs e)
+        {
+            Convert(false);
+        }
+
+        private void Convert(bool to)
+        {
+            try
+            {
+                textBox.Text = to ? Morse.To(textBox.Text) : Morse.From(textBox.Text);
+            }
+            catch (MorseException ex)
+            {
+                MessageBox.Show("Ongeldige invoer: " + ex.Value, "Fout",
+                   MessageBoxButton.OK, MessageBoxImage.Error);
+                textBox.Select(ex.Index, ex.Length);
+                textBox.Focus();
+            }
         }
     }
 }

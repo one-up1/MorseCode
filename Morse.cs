@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MorseCode
 {
-    public class Morse
+    public static class Morse
     {
         private static readonly Dictionary<char, string> codes = new Dictionary<char, string>();
         private static readonly Dictionary<string, char> chars = new Dictionary<string, char>();
@@ -120,9 +119,18 @@ namespace MorseCode
 
         public static string To(string s)
         {
+            s = s.ToUpper();
+
             StringBuilder ret = new StringBuilder();
-            foreach (char c in s.ToUpper())
+            char c;
+            for (int i = 0; i < s.Length; i++)
             {
+                c = s[i];
+                if (!codes.ContainsKey(c))
+                {
+                    throw new MorseException(c.ToString(), i, 1);
+                }
+
                 if (ret.Length != 0)
                 {
                     ret.Append(' ');
@@ -136,28 +144,56 @@ namespace MorseCode
         {
             StringBuilder ret = new StringBuilder();
             StringBuilder code = new StringBuilder();
-            foreach (char c in s)
+            int codeStart = 0; // Voor error handling.
+            for (int i = 0; i < s.Length; i++)
             {
+                char c = s[i];
                 if (c == ' ')
                 {
-                    AppendChar(ret, code);
+                    AppendChar(ret, code, codeStart, i);
                     code.Clear();
+                    codeStart = i + 1;
                 }
                 else
                 {
                     code.Append(c);
                 }
             }
-            AppendChar(ret, code);
+            AppendChar(ret, code, codeStart, s.Length);
             return ret.ToString();
         }
 
-        private static void AppendChar(StringBuilder sb, StringBuilder code)
+        private static void AppendChar(StringBuilder sb, StringBuilder code,
+            int codeStart, int codeEnd)
         {
             if (code.Length != 0)
             {
-                sb.Append(chars[code.ToString()]);
+                string s = code.ToString();
+                if (!chars.ContainsKey(s))
+                {
+                    throw new MorseException(s, codeStart, codeEnd - codeStart);
+                }
+
+                sb.Append(chars[s]);
             }
         }
+    }
+
+    public class MorseException : Exception
+    {
+        public MorseException(string value, int index, int length)
+        {
+            this.Value = value;
+            this.Index = index;
+            this.Length = length;
+        }
+
+        // Auto properties? Nooit van gehoord, handig :)
+
+        public string Value { get; }
+
+        public int Index { get; }
+        
+        public int Length { get; }
     }
 }
