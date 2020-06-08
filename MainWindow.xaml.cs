@@ -27,7 +27,8 @@ namespace MorseCode
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Morse.t();
+            Console.WriteLine(Morse.To("hello morse code world"));
+            Console.WriteLine(Morse.From(".... . .-.. .-.. --- / -- --- .-. ... . / -.-. --- -.. . / .-- --- .-. .-.. -.."));
         }
     }
 }
