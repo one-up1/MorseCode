@@ -20,12 +20,13 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <TextBox
             Name="textBox"
             Grid.Row="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             Padding="4"
             TextWrapping="Wrap"
             AcceptsReturn="True"
@@ -44,6 +45,13 @@
             Grid.Column="1"
             Content="Naar tekst"
             Click="FromMorse" />
+
+        <Button
+            Name="bPlay"
+            Grid.Row="1"
+            Grid.Column="2"
+            Content="Afspelen"
+            Click="Play" />
 
     </Grid>
     
